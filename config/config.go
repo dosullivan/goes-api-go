@@ -1,5 +1,6 @@
 package config
 
+// Config struct to hold the configuration values for reaching the S3 storage
 type Config struct {
     BucketName      string `env:"BUCKET_NAME,required"`
     S3Endpoint      string `env:"S3_ENDPOINT,required"`
