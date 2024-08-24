@@ -13,25 +13,25 @@ import (
 )
 
 func main() {
-    ctx := context.Background()
+	ctx := context.Background()
 
-    var cfg config.Config
-    if err := envconfig.Process(ctx, &cfg); err != nil {
-        log.Fatalf("Failed to load environment configuration: %v", err)
-    }
+	var cfg config.Config
+	if err := envconfig.Process(ctx, &cfg); err != nil {
+		log.Fatalf("Failed to load environment configuration: %v", err)
+	}
 
-    s3Client, err := s3.NewS3Client(ctx, &cfg)
-    if err != nil {
-        log.Fatalf("Failed to initialize S3 client: %v", err)
-    }
+	s3Client, err := s3.NewS3Client(ctx, &cfg)
+	if err != nil {
+		log.Fatalf("Failed to initialize S3 client: %v", err)
+	}
 
-    router := gin.Default()
+	router := gin.Default()
 
-    router.GET("/latest", handlers.GetLatestImage(s3Client))
-    router.GET("/archive/:date", handlers.GetImagesByDate(s3Client))
-    router.GET("/available-dates", handlers.GetAvailableDates(s3Client))
+	router.GET("/latest", handlers.GetLatestImage(s3Client))
+	router.GET("/archive/:date", handlers.GetImagesByDate(s3Client))
+	router.GET("/available-dates", handlers.GetAvailableDates(s3Client))
 
-    if err := router.Run(":" + cfg.Port); err != nil {
-        log.Fatalf("Failed to run server: %v", err)
-    }
+	if err := router.Run(":" + cfg.Port); err != nil {
+		log.Fatalf("Failed to run server: %v", err)
+	}
 }

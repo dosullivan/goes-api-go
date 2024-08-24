@@ -8,42 +8,48 @@ import (
 	"goes-api-go/s3"
 
 	"github.com/gin-gonic/gin"
-
-	awsS3 "github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/minio/minio-go/v7"
 )
 
 func GetLatestImage(s3Client *s3.S3Client) gin.HandlerFunc {
-    return func(c *gin.Context) {
-        maxDaysBack := 7
-        ctx := context.Background()
-        var latestObjectKey string
+	return func(c *gin.Context) {
+		maxDaysBack := 7
+		ctx := context.Background()
+		var latestObjectKey string
 
-        for i := 0; i < maxDaysBack; i++ {
-            checkDate := time.Now().AddDate(0, 0, -i).Format("2006-01-02")
-            prefix := "false-color/fd/" + checkDate + "/"
+		for i := 0; i < maxDaysBack; i++ {
+			checkDate := time.Now().AddDate(0, 0, -i).Format("2006-01-02")
+			prefix := "false-color/fd/" + checkDate + "/"
 
-            resp, err := s3Client.Client.ListObjectsV2(ctx, &awsS3.ListObjectsV2Input{
-                Bucket: &s3Client.BucketName,
-                Prefix: &prefix,
-            })
-            if err != nil {
-                c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-                return
-            }
+			// Use Minio's ListObjects to list objects in the bucket with the specified prefix
+			objectCh := s3Client.Client.ListObjects(ctx, s3Client.BucketName, minio.ListObjectsOptions{
+				Prefix:    prefix,
+				Recursive: true,
+			})
 
-            if len(resp.Contents) > 0 {
-                latestObject := resp.Contents[len(resp.Contents)-1]
-                latestObjectKey = *latestObject.Key
-                break
-            }
-        }
+			var lastObject minio.ObjectInfo
+			found := false
+			for object := range objectCh {
+				if object.Err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": object.Err.Error()})
+					return
+				}
+				lastObject = object
+				found = true
+			}
 
-        if latestObjectKey == "" {
-            c.JSON(http.StatusNotFound, gin.H{"error": "No recent images found"})
-            return
-        }
+			if found {
+				latestObjectKey = lastObject.Key
+				break
+			}
+		}
 
-        imageURL := s3Client.BaseURL + latestObjectKey
-        c.JSON(http.StatusOK, gin.H{"imageUrl": imageURL})
-    }
+		if latestObjectKey == "" {
+			c.JSON(http.StatusNotFound, gin.H{"error": "No recent images found"})
+			return
+		}
+
+		imageURL := s3Client.BaseURL + latestObjectKey
+		c.JSON(http.StatusOK, gin.H{"imageUrl": imageURL})
+	}
 }
