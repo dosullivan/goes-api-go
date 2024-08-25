@@ -1,7 +1,7 @@
 # goes-api-go
 
 ## Description
-A lightweight and fast API for retrieving GOES satellite data stored in an S3 bucket, written in Go. This service is designed to be used in conjunction with goes-web, a lightweight web frontend for viewing GOES satellite data.
+A lightweight and fast API for retrieving [GOES satellite data](https://www.goes-r.gov/) stored in an S3 bucket, written in Go. This service is designed to be used in conjunction with goes-web, a lightweight web frontend for viewing GOES satellite data.
 
 ## Motivation
 Basically just wanted to have an easier API to use than the S3 API with a frontend react app.
