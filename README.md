@@ -56,3 +56,6 @@ Likewise, a sample `docker-compose.yml` file is provided for running the server 
 To start the server in development mode, just run `make run`. This will start the server on port 3000.
 
 To test your docker compose setup, run `make local-build-deploy`.
+
+## improvements for the future:
+- EMWIN and NWS text retrieval?
