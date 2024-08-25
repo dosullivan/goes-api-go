@@ -3,6 +3,9 @@
 ## Description
 A lightweight and fast API for retrieving GOES satellite data stored in an S3 bucket, written in Go. This service is designed to be used in conjunction with goes-web, a lightweight web frontend for viewing GOES satellite data.
 
+## Motivation
+Basically just wanted to have an easier API to use than the S3 API with a frontend react app.
+
 ## Requirements
 This service assumes that you have an S3 bucket that is filled with GOES satellite data, likely from [goesrecv](https://pietern.github.io/goestools/commands/goesrecv.html), a system for capturing and processing the satellite data locally. It assumes that you have the same directory structure as the data folder used by `goesproc` as it's writing data. Basically, this implies using some cron script to simply copy the data from the data folder used by `goesproc` (e.g. goes16) to an S3 bucket.
 
@@ -41,3 +44,15 @@ The following API endpoints are available:
   ]
 }
 ```
+
+## Deployment
+(to be written)
+
+## Development
+This repo uses [direnv](https://direnv.net/) to manage environment variables for development. The .envrc file is a sample with default values. It's setup to pick up overriding values from `.envrc.local` if it exists. You can copy the `.envrc` file to `.envrc.local` and modify it to your needs. The `.envrc.local` file is ignored by git.
+
+Likewise, a sample `docker-compose.yml` file is provided for running the server in a container locally. You can copy this file to `docker-compose.override.yml` and modify it to your needs. The `docker-compose.override.yml` file is ignored by git.
+
+To start the server in development mode, just run `make run`. This will start the server on port 3000.
+
+To test your docker compose setup, run `make local-build-deploy`.
