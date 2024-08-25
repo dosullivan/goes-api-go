@@ -30,8 +30,14 @@ func NewS3Client(ctx context.Context, cfg *cfg.Config) (*S3Client, error) {
 		return nil, err
 	}
 
+	// Determine the protocol based on the UseSSLforS3 setting
+	protocol := "http"
+	if cfg.UseSSLforS3 {
+		protocol = "https"
+	}
+
 	// Construct the base URL for the S3 bucket, which will be used to access objects
-	baseURL := fmt.Sprintf("%s/%s/", cfg.S3Endpoint, cfg.BucketName)
+	baseURL := fmt.Sprintf("%s://%s/%s/", protocol, cfg.S3Endpoint, cfg.BucketName)
 
 	// Return the initialized S3Client, which wraps the Minio client along with the bucket name and base URL
 	return &S3Client{
