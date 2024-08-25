@@ -8,5 +8,6 @@ type Config struct {
     SecretAccessKey string `env:"SECRET_ACCESS_KEY,required"`
     Port            string `env:"PORT,default=3000"`
     UseSSLforS3     bool   `env:"USE_SSL_FOR_S3,default=true"`
+    TrustedProxies  string `env:"TRUSTED_PROXIES,default="` // Comma-separated list of trusted proxies, if any
 }
 

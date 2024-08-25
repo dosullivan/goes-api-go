@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"strings"
 
 	"goes-api-go/config"
 	"goes-api-go/handlers"
@@ -25,7 +26,23 @@ func main() {
 		log.Fatalf("Failed to initialize S3 client: %v", err)
 	}
 
-	router := gin.Default()
+	router := gin.New()
+	router.Use(gin.Logger(), gin.Recovery())
+
+	// Check if TRUSTED_PROXIES is set or not
+	if cfg.TrustedProxies == "" {
+		// Disable proxy support by setting nil
+		if err := router.SetTrustedProxies(nil); err != nil {
+			log.Fatalf("Failed to set trusted proxies: %v", err)
+		}
+	} else {
+		// Split the string into a slice of trusted proxy IP ranges
+		trustedProxies := strings.Split(cfg.TrustedProxies, ",")
+		log.Printf("Trusted proxies: %v", trustedProxies)
+		if err := router.SetTrustedProxies(trustedProxies); err != nil {
+			log.Fatalf("Failed to set trusted proxies: %v", err)
+		}
+	}
 
 	router.GET("/latest", handlers.GetLatestImage(s3Client))
 	router.GET("/archive/:date", handlers.GetImagesByDate(s3Client))

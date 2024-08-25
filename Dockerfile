@@ -16,4 +16,6 @@ COPY --from=builder /app/goes-api /app/goes-api
 
 EXPOSE 3000
 
+ENV GIN_MODE=release
+
 ENTRYPOINT [ "/app/goes-api" ]
