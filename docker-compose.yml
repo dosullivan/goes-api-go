@@ -1,15 +1,13 @@
-version: '3.8'
-
 services:
   goes-api:
-    image: ghcr.io/dosullivan/goes-api:latest # use goes-api:latest for local development
+    image: ghcr.io/dosullivan/goes-api:latest
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
-      - S3_ENDPOINT=http://localhost:9000
+      - S3_ENDPOINT=localhost:9000
       - BUCKET_NAME=goes-16
       - ACCESS_KEY_ID=example
       - SECRET_ACCESS_KEY=example
