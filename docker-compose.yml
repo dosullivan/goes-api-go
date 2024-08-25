@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  goes-api:
+    image: ghcr.io/dosullivan/goes-api:latest # use goes-api:latest for local development
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - S3_ENDPOINT=http://localhost:9000
+      - BUCKET_NAME=goes-16
+      - ACCESS_KEY_ID=example
+      - SECRET_ACCESS_KEY=example
+      - USE_SSL_FOR_S3=true
+    restart: always  # Ensure the service restarts on failure or on system reboot
