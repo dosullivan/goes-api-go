@@ -7,5 +7,6 @@ type Config struct {
     AccessKeyID     string `env:"ACCESS_KEY_ID,required"`
     SecretAccessKey string `env:"SECRET_ACCESS_KEY,required"`
     Port            string `env:"PORT,default=3000"`
+    UseSSLforS3     bool   `env:"USE_SSL_FOR_S3,default=true"`
 }
 

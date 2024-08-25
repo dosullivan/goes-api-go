@@ -22,7 +22,7 @@ func NewS3Client(ctx context.Context, cfg *cfg.Config) (*S3Client, error) {
 	// Create the MinIO client with the provided endpoint, access key, and secret key
 	client, err := minio.New(cfg.S3Endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(cfg.AccessKeyID, cfg.SecretAccessKey, ""),	// Use static credentials for authentication
-		Secure: true,	// Indicates whether to use a secure (HTTPS) connection
+		Secure: cfg.UseSSLforS3,	// Indicates whether to use a secure (HTTPS) connection
 	})
 	if err != nil {
 		// Log a fatal error message and return the error if the client creation fails
