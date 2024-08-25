@@ -3,7 +3,9 @@ package handlers
 import (
 	"context"
 	"net/http"
+	"sort"
 	"strings"
+	"time"
 
 	"goes-api-go/s3"
 
@@ -51,6 +53,19 @@ func GetAvailableDates(s3Client *s3.S3Client) gin.HandlerFunc {
 		for date := range datesSet {
 			dates = append(dates, date)
 		}
+
+		// Sort the dates slice in descending order (most recent to least recent)
+		sort.Slice(dates, func(i, j int) bool {
+			// Parse the dates to time.Time for comparison
+			dateI, errI := time.Parse("2006-01-02", dates[i])
+			dateJ, errJ := time.Parse("2006-01-02", dates[j])
+			if errI != nil || errJ != nil {
+				// If there's a parsing error, leave the order unchanged
+				return dates[i] > dates[j]
+			}
+			// Compare the parsed dates
+			return dateI.After(dateJ)
+		})
 
 		// Respond to the HTTP request with a JSON object containing the list of available dates
 		c.JSON(http.StatusOK, gin.H{"availableDates": dates})
