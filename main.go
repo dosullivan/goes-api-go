@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
+	"net/http"
 	"strings"
+	"time"
 
 	"goes-api-go/config"
 	"goes-api-go/handlers"
@@ -48,6 +51,41 @@ func main() {
 	router.GET("/archive/:date", handlers.GetImagesByDate(s3Client))
 	router.GET("/available-dates", handlers.GetAvailableDates(s3Client))
 
+	router.GET("/proxy/image", func(c *gin.Context) {
+		imageUrl := c.Query("url")
+		if imageUrl == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Image URL is required"})
+			return
+		}
+
+		// Validate URL is from our Minio instance
+		if !strings.HasPrefix(imageUrl, s3Client.BaseURL) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid image source"})
+			return
+		}
+
+		client := &http.Client{
+			Timeout: 10 * time.Second,
+		}
+
+		resp, err := client.Get(imageUrl)
+		if err != nil || resp.StatusCode != http.StatusOK {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch image"})
+			return
+		}
+		defer resp.Body.Close()
+
+		// Set appropriate headers for image delivery
+		c.Header("Content-Type", resp.Header.Get("Content-Type"))
+		c.Header("Cache-Control", "public, max-age=3600") // Optional: Add caching
+
+		c.Stream(func(w io.Writer) bool {
+			_, err := io.Copy(w, resp.Body)
+			return err == nil
+		})
+	})
+
+	// Run the server
 	if err := router.Run(":" + cfg.Port); err != nil {
 		log.Fatalf("Failed to run server: %v", err)
 	}

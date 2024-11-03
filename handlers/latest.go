@@ -27,8 +27,8 @@ func GetLatestImage(s3Client *s3.S3Client) gin.HandlerFunc {
 
 			// Use Minio's ListObjects to list objects in the bucket with the specified prefix
 			objectCh := s3Client.Client.ListObjects(ctx, s3Client.BucketName, minio.ListObjectsOptions{
-				Prefix:    prefix,  // Filter objects by the specified prefix
-				Recursive: true,    // Recursive listing to include all objects under the prefix
+				Prefix:    prefix, // Filter objects by the specified prefix
+				Recursive: true,   // Recursive listing to include all objects under the prefix
 			})
 
 			var lastObject minio.ObjectInfo // Variable to hold the last object found
@@ -36,7 +36,7 @@ func GetLatestImage(s3Client *s3.S3Client) gin.HandlerFunc {
 
 			// Iterate over the objects returned by ListObjects
 			for object := range objectCh {
-                // Check if there was an error retrieving the object
+				// Check if there was an error retrieving the object
 				if object.Err != nil {
 					// If there's an error, respond with a 500 Internal Server Error and the error message
 					c.JSON(http.StatusInternalServerError, gin.H{"error": object.Err.Error()})
@@ -44,7 +44,7 @@ func GetLatestImage(s3Client *s3.S3Client) gin.HandlerFunc {
 				}
 				// Set the lastObject to the current object
 				lastObject = object
-				found = true  // Set the flag to true indicating an object was found
+				found = true // Set the flag to true indicating an object was found
 			}
 
 			// If we found at least one object, store its key and stop searching further
