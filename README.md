@@ -4,7 +4,7 @@
 A lightweight and fast API for retrieving [GOES satellite data](https://www.goes-r.gov/) stored in an S3 bucket, written in Go. This service is designed to be used in conjunction with goes-web, a lightweight web frontend for viewing GOES satellite data. The service is meant to run in a local network alongside a locally-hosted minio s3 bucket. The images are notably provided through a `/proxy/image` endpoint, which streams the image from the minio bucket through the api. With this setup, the frontend application goes-viewer, also running locally, can be served through a cloudflare tunnel or tailscale funnel on the internet, and the end user can pull the image through.
 
 ## Motivation
-Basically just wanted to have an easier API to use than the S3 API with a frontend react app.
+Basically just wanted to have an easier API to use than the S3 API with a frontend react app, while also making the proxying mentioned above possible, to minimize the surface area exposed to the internet.
 
 ## Requirements
 This service assumes that you have an S3 bucket that is filled with GOES satellite data, likely from [goesrecv](https://pietern.github.io/goestools/commands/goesrecv.html), a system for capturing and processing the satellite data locally. It assumes that you have the same directory structure as the data folder used by `goesproc` as it's writing data. Basically, this implies using some cron script to simply copy the data from the data folder used by `goesproc` (e.g. goes16) to an S3 bucket.
