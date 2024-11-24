@@ -81,7 +81,11 @@ func main() {
 
 		c.Stream(func(w io.Writer) bool {
 			_, err := io.Copy(w, resp.Body)
-			return err == nil
+			if err != nil {
+				log.Printf("Error while streaming image: %v", err)
+				return false // Stop streaming on error
+			}
+			return false // Stop streaming after successful copy
 		})
 	})
 
