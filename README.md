@@ -9,6 +9,8 @@ Basically just wanted to have an easier API to use than the S3 API with a fronte
 ## Requirements
 This service assumes that you have an S3 bucket that is filled with GOES satellite data, likely from [goesrecv](https://pietern.github.io/goestools/commands/goesrecv.html), a system for capturing and processing the satellite data locally. It assumes that you have the same directory structure as the data folder used by `goesproc` as it's writing data. Basically, this implies using some cron script to simply copy the data from the data folder used by `goesproc` (e.g. goes16) to an S3 bucket.
 
+You can find an [example script]](./examples/upload.sh) for syncing the data from the data folder used by `goesproc` to an S3 bucket.
+
 This project was developed against minio and digital ocean spaces, but should work with any S3-compatible storage.
 
 ## Configuration
