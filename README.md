@@ -1,7 +1,7 @@
 # goes-api-go
 
 ## Description
-A lightweight and fast API for retrieving [GOES satellite data](https://www.goes-r.gov/) stored in an S3 bucket, written in Go. This service is designed to be used in conjunction with goes-web, a lightweight web frontend for viewing GOES satellite data.
+A lightweight and fast API for retrieving [GOES satellite data](https://www.goes-r.gov/) stored in an S3 bucket, written in Go. This service is designed to be used in conjunction with goes-web, a lightweight web frontend for viewing GOES satellite data. The service is meant to run in a local network alongside a locally-hosted minio s3 bucket. The images are notably provided through a `/proxy/image` endpoint, which streams the image from the minio bucket through the api. With this setup, the frontend application goes-viewer, also running locally, can be served through a cloudflare tunnel or tailscale funnel on the internet, and the end user can pull the image through.
 
 ## Motivation
 Basically just wanted to have an easier API to use than the S3 API with a frontend react app.
