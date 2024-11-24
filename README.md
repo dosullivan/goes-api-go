@@ -18,7 +18,7 @@ The following environment variables are required:
 - `S3_ENDPOINT` - The endpoint for the S3 API.
 - `BUCKET_NAME` - The name of the S3 bucket.
 - `USE_SSL_FOR_S3` - Whether to use SSL for S3. Set to `false` to use with simple local minio setups.
-- `TRUSTED_PROXIES`- A comma-separated list of trusted proxies, in case you want to set them. This is useful if you are running behind a reverse proxy and want to get the real IP address of the client.
+- `TRUSTED_PROXIES`- A comma-separated list of trusted proxies, in case you want to set them. This isn't used for anything yet.
 
 ## API Usage
 The following API endpoints are available:
