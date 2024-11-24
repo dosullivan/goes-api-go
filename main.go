@@ -34,12 +34,12 @@ func main() {
 
 	// Check if TRUSTED_PROXIES is set or not
 	if cfg.TrustedProxies == "" {
-		// Disable proxy support by setting nil
-		if err := router.SetTrustedProxies(nil); err != nil {
+		// if no trusted proxies are set, trust local networks
+		if err := router.SetTrustedProxies([]string{"127.0.0.1", "192.168.0.0/16", "10.0.0.0/8"}); err != nil {
 			log.Fatalf("Failed to set trusted proxies: %v", err)
 		}
 	} else {
-		// Split the string into a slice of trusted proxy IP ranges
+		// if trusted proxies are set, use them
 		trustedProxies := strings.Split(cfg.TrustedProxies, ",")
 		log.Printf("Trusted proxies: %v", trustedProxies)
 		if err := router.SetTrustedProxies(trustedProxies); err != nil {
